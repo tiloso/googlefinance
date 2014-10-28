@@ -27,14 +27,14 @@ type Quote struct {
 }
 
 func main() {
-  var quotes []Quote
-  start, _ := time.Parse("")
-  end, _ := time.Parse("")
+  var qs []Quote
+  d, _ := time.Parse("2-Jan-06", "22-Oct-14")
 
-  if err := googlefinance.Range(start, end).Key("NASDAQ:GOOG").Get(&quotes); err != nil {
+  if err := googlefinance.Date(d).Key("NASDAQ:GOOG").Get(&qs); err != nil {
     fmt.Printf("err: %v\n", err)
   }
-  fmt.Printf("%+v\n", quotes)
+  fmt.Printf("%+v\n", qs)
+  // Output: [{Date:2014-10-22 00:00:00 +0000 UTC Open:529.89 High:539.8 Low:528.8 Close:532.71 Volume:2917183}]
 }
 ```
 
