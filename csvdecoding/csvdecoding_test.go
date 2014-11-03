@@ -1,4 +1,4 @@
-package csvstream_test
+package csvdecoding_test
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tiloso/googlefinance/csvstream"
+	"github.com/tiloso/googlefinance/csvdecoding"
 )
 
 type Q struct {
@@ -35,7 +35,7 @@ func TestDecodeInvalidArgNoPtr(t *testing.T) {
 	}()
 
 	arg := "a"
-	csvstream.NewDecoder(streamMixedCase).Decode(arg)
+	csvdecoding.New(streamMixedCase).Decode(arg)
 }
 
 func TestDecodeInvalidArgPtrToNoSlice(t *testing.T) {
@@ -46,7 +46,7 @@ func TestDecodeInvalidArgPtrToNoSlice(t *testing.T) {
 	}()
 
 	arg := Q{}
-	csvstream.NewDecoder(streamMixedCase).Decode(&arg)
+	csvdecoding.New(streamMixedCase).Decode(&arg)
 }
 
 func TestDecodeInvalidArgPtrToSliceOfNoStruct(t *testing.T) {
@@ -57,7 +57,7 @@ func TestDecodeInvalidArgPtrToSliceOfNoStruct(t *testing.T) {
 	}()
 
 	arg := []*Q{}
-	csvstream.NewDecoder(streamMixedCase).Decode(&arg)
+	csvdecoding.New(streamMixedCase).Decode(&arg)
 }
 
 type Q2 struct {
@@ -69,7 +69,7 @@ type Q2 struct {
 
 func TestDecode(t *testing.T) {
 	qs := []Q2{}
-	if err := csvstream.NewDecoder(streamMixedCase).Decode(&qs); err != nil {
+	if err := csvdecoding.New(streamMixedCase).Decode(&qs); err != nil {
 		t.Errorf("err: %v")
 	}
 
@@ -95,14 +95,14 @@ func TestDecode(t *testing.T) {
 
 func TestDecodeWithInvalidType(t *testing.T) {
 	qs := []Q{}
-	err := csvstream.NewDecoder(streamInvalidType).Decode(&qs)
+	err := csvdecoding.New(streamInvalidType).Decode(&qs)
 
 	if err == nil {
 		t.Error("expected err, got nil")
 	}
-	_, ok := err.(*csvstream.UnmarshalTypeError)
+	_, ok := err.(*csvdecoding.UnmarshalTypeError)
 	if !ok {
-		t.Errorf("expect err type of %v, got %v", "*csvstream.UnmarshalTypeError", err)
+		t.Errorf("expect err type of %v, got %v", "*csvdecoding.UnmarshalTypeError", err)
 	}
 
 	if len(qs) != 2 {
@@ -131,7 +131,7 @@ Date,Open,High,Low,Close,Volume
 	}
 
 	var quotes []Quote
-	if err := csvstream.NewDecoder(r).Decode(&quotes); err != nil {
+	if err := csvdecoding.New(r).Decode(&quotes); err != nil {
 		fmt.Printf("err: %v\n", err)
 	}
 	fmt.Printf("%+v\n", quotes)

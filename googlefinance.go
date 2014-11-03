@@ -10,7 +10,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/tiloso/googlefinance/csvstream"
+	"github.com/tiloso/googlefinance/csvdecoding"
 )
 
 const (
@@ -64,7 +64,7 @@ func (q *Query) Get(v interface{}) error {
 		return err
 	}
 	defer rc.Close()
-	return csvstream.NewDecoder(rc).Decode(v)
+	return csvdecoding.New(rc).Decode(v)
 }
 
 func encDate(d time.Time) string {

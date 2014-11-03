@@ -1,4 +1,4 @@
-// Package csvstream implements decoding of CSV streams (from googlefinance) into slices of
+// Package csvdecoding implements decoding of CSV streams (from googlefinance) into slices of
 // Go structs.
 //
 // It is build on top of Go's standard library package encoding/csv and
@@ -6,7 +6,7 @@
 //
 // The package has only been tested with CSV streams from googlefinance
 // so far and it only allows to decode CSV data into a slice of structs.
-package csvstream
+package csvdecoding
 
 import (
 	"encoding/csv"
@@ -25,8 +25,8 @@ type Decoder struct {
 	err    error
 }
 
-// NewDecoder returns a new decoder that reads from r.
-func NewDecoder(r io.Reader) *Decoder {
+// New returns a new decoder that reads from r.
+func New(r io.Reader) *Decoder {
 	return &Decoder{
 		cr: csv.NewReader(r),
 	}
