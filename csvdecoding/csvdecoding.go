@@ -53,7 +53,7 @@ func (e *UnmarshalTypeError) Error() string {
 //
 // Decode capitalises CSV headers and maps them against struct field names. (E.g.
 // columns named `foo` and `Foo` will be matched agains a struct field name `Foo`,
-// the latter occurence overwrites the first one.
+// the latter occurence overwrites the first one.)
 func (d *Decoder) Decode(v interface{}) error {
 	resultv := reflect.ValueOf(v)
 
