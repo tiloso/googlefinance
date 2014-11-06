@@ -175,7 +175,7 @@ func (f *field) unmarshal(v string, i interface{}) error {
 		elemv.FieldByName(f.name).SetInt(pv)
 	case reflect.Struct:
 		if f.typ == reflect.TypeOf(time.Time{}) {
-			t, err := time.Parse("02-Jan-06", v)
+			t, err := time.Parse("2-Jan-06", v)
 			if err != nil {
 				return newUTE(v, f.typ)
 			}
