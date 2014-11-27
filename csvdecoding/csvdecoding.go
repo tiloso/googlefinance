@@ -40,7 +40,7 @@ type UnmarshalTypeError struct {
 }
 
 func (e *UnmarshalTypeError) Error() string {
-	return fmt.Sprintf("csv: cannot unmarshal %v into go value of type %v", e.Value, e.Type.String())
+	return fmt.Sprintf("csvdecoding: cannot unmarshal %v into go value of type %v", e.Value, e.Type.String())
 }
 
 // Decode reads the CSV-encoded value from its input and stores it in the value
@@ -67,7 +67,7 @@ func (d *Decoder) Decode(v interface{}) error {
 	elemt := slicev.Type().Elem()
 
 	if err := d.parseHeader(v); err != nil {
-		return fmt.Errorf("err decoder.parseHeader: %v", err)
+		return fmt.Errorf("csvdecoding: %v", err)
 	}
 
 	for {
@@ -76,7 +76,7 @@ func (d *Decoder) Decode(v interface{}) error {
 			if err == io.EOF {
 				break
 			}
-			return err
+			return fmt.Errorf("csvdecoding: %v", err)
 		}
 
 		elemp := reflect.New(elemt)
@@ -89,12 +89,12 @@ func (d *Decoder) Decode(v interface{}) error {
 }
 
 func (d *Decoder) unmarshal(records []string, v interface{}) {
-	for i, field := range d.fields {
-		if field == nil {
+	for i, f := range d.fields {
+		if f == nil {
 			continue
 		}
 
-		if err := field.unmarshal(records[i], v); err != nil && d.err == nil {
+		if err := f.unmarshal(records[i], v); err != nil && d.err == nil {
 			d.err = err
 		}
 	}
@@ -103,7 +103,7 @@ func (d *Decoder) unmarshal(records []string, v interface{}) {
 func (d *Decoder) parseHeader(v interface{}) error {
 	records, err := d.cr.Read()
 	if err != nil {
-		return fmt.Errorf("err read header row: %v", err)
+		return fmt.Errorf("parse header: %v", err)
 	}
 
 	slicep := reflect.ValueOf(v)

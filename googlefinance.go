@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"time"
 
@@ -61,7 +60,7 @@ func (q *Query) Key(k string) *Query {
 func (q *Query) Get(v interface{}) error {
 	rc, err := q.get()
 	if err != nil {
-		return err
+		return fmt.Errorf("googlefinance: %v", err)
 	}
 	defer rc.Close()
 	return csvdecoding.New(rc).Decode(v)
@@ -87,15 +86,11 @@ func (q *Query) get() (io.ReadCloser, error) {
 
 	res, err := http.Get(addr)
 	if err != nil {
-		return nil, fmt.Errorf("err trying to get %v: %v", addr, err)
+		return nil, err
 	}
 
 	if res.StatusCode != http.StatusOK {
-		bt, err := httputil.DumpResponse(res, true)
-		if err != nil {
-			return nil, fmt.Errorf("err trying to dump response: %s\n", err)
-		}
-		return nil, fmt.Errorf("err trying to fetch csv: %v\n%s\n", addr, bt)
+		return nil, fmt.Errorf("get %v: unexpected status code: %v", addr, res.StatusCode)
 	}
 
 	return res.Body, nil
